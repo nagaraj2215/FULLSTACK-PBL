@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mental Health Calculator</title>
+  <style>
+    :root{
+      --primary:#111827;
+      --primary2:#16a34a;
+      --card:rgba(255,255,255,.96);
+      --text:#111827;
+      --muted:#4b5563;
+      --danger:#111827;
+      --soft:#f0fdf4;
+      --shadow:0 18px 60px rgba(2,6,23,.18);
+    }
+    *{box-sizing:border-box;font-family:'Segoe UI',system-ui,Arial,sans-serif;}
+    body{
+      background:linear-gradient(135deg,#ffffff,#dcfce7);
+      color:var(--text);
+      margin:0;
+      min-height:100vh;
+      padding:24px;
+    }
+    .page{margin:0 auto;max-width:1120px;}
+    .hero{
+      background:rgba(255,255,255,.86);
+      border:1px solid rgba(17,24,39,.08);
+      border-radius:24px;
+      box-shadow:var(--shadow);
+      color:var(--text);
+      margin-bottom:16px;
+      padding:22px;
+    }
+    h1{font-size:30px;letter-spacing:-.02em;margin:0 0 8px;}
+    .hero p{font-weight:700;line-height:1.5;margin:0;opacity:.94;}
+    .grid{display:grid;gap:16px;grid-template-columns:.95fr 1.05fr;}
+    .card{
+      background:var(--card);
+      border:1px solid rgba(15,23,42,.06);
+      border-radius:20px;
+      box-shadow:var(--shadow);
+      padding:20px;
+    }
+    h2{color:var(--primary);font-size:20px;margin:0 0 12px;}
+    h3{font-size:16px;margin:18px 0 8px;}
+    .row{display:grid;gap:12px;grid-template-columns:1fr 1fr;margin-bottom:12px;}
+    label{color:var(--primary);display:block;font-size:13px;font-weight:800;margin-bottom:6px;}
+    input{
+      background:#fff;
+      border:1px solid #d1d5db;
+      border-radius:12px;
+      font-size:15px;
+      font-weight:700;
+      outline:none;
+      padding:12px;
+      width:100%;
+    }
+    input:focus{border-color:var(--primary2);box-shadow:0 0 0 3px rgba(22,163,74,.14);}
+    .error{
+      background:#f0fdf4;
+      border:1px solid #bbf7d0;
+      border-radius:12px;
+      color:#111827;
+      font-weight:800;
+      line-height:1.45;
+      margin-bottom:12px;
+      padding:11px;
+    }
+    .prefill{color:var(--muted);font-size:13px;font-weight:700;margin:4px 0 0;}
+    .actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px;}
+    .btn{
+      border:0;
+      border-radius:13px;
+      cursor:pointer;
+      display:inline-flex;
+      font-weight:900;
+      padding:12px 16px;
+      text-decoration:none;
+    }
+    .btn.primary{background:linear-gradient(135deg,#111827,#16a34a);color:#fff;}
+    .btn.ghost{background:rgba(22,163,74,.09);border:1px solid rgba(22,163,74,.18);color:var(--primary);}
+    .btn.danger{background:#f0fdf4;border:1px solid #bbf7d0;color:#111827;}
+    .summary{display:grid;gap:10px;grid-template-columns:repeat(3,1fr);margin-bottom:14px;}
+    .pill{background:var(--soft);border:1px solid #bbf7d0;border-radius:14px;padding:11px;}
+    .pill b{color:var(--primary);display:block;font-size:18px;margin-bottom:3px;}
+    .pill span{color:var(--muted);font-size:12px;font-weight:800;}
+    .result{
+      background:var(--soft);
+      border:1px solid #bbf7d0;
+      border-radius:15px;
+      margin-bottom:14px;
+      padding:14px;
+    }
+    .score{color:var(--primary);font-size:25px;font-weight:1000;}
+    .condition{color:#334155;font-weight:900;margin-top:5px;}
+    ul{color:#334155;font-weight:700;line-height:1.55;margin:8px 0 0;padding-left:20px;}
+    li{margin-bottom:7px;}
+    .concern{color:var(--danger);}
+    .chart-title{color:var(--primary);font-size:17px;font-weight:900;margin:0 0 8px;}
+    .chart-frame{height:225px;position:relative;width:100%;}
+    canvas{
+      background:#f8fafc;
+      border:1px solid #e2e8f0;
+      border-radius:14px;
+      display:block;
+      height:100% !important;
+      width:100% !important;
+    }
+    .notice{
+      background:#fff;
+      border:1px solid rgba(15,23,42,.08);
+      border-radius:15px;
+      color:var(--muted);
+      font-size:13px;
+      font-weight:700;
+      line-height:1.5;
+      margin-top:16px;
+      padding:12px;
+    }
+    .reset{grid-column:1/-1;}
+    @media(max-width:880px){.grid{grid-template-columns:1fr;}}
+    @media(max-width:520px){.row,.summary{grid-template-columns:1fr;}}
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header class="hero">
+      <h1>{{ user.name }}'s Mental Health Calculator</h1>
+      <p>Record sleep, mood, heart rate, and stress to calculate and track a personal mental wellness score.</p>
+    </header>
+
+    <main class="grid">
+      <section class="card">
+        <h2>Enter Today's Inputs</h2>
+        {% if form_error %}
+          <div class="error">{{ form_error }}</div>
+        {% endif %}
+        <form method="POST">
+          {% csrf_token %}
+          <div class="row">
+            <div>
+              <label for="sleep_hours">Sleep Hours</label>
+              <input id="sleep_hours" name="sleep_hours" type="number" step="0.1" min="0" max="24" value="{{ form.sleep_hours }}" placeholder="e.g., 7.5" required />
+            </div>
+            <div>
+              <label for="mood">Mood (0 to 10)</label>
+              <input id="mood" name="mood" type="number" step="0.5" min="0" max="10" value="{{ form.mood }}" placeholder="e.g., 7" required />
+            </div>
+          </div>
+          <div class="row">
+            <div>
+              <label for="heart_rate">Heart Rate (bpm)</label>
+              <input id="heart_rate" name="heart_rate" type="number" step="1" min="30" max="220" value="{{ form.heart_rate }}" placeholder="e.g., 72" required />
+            </div>
+            <div>
+              <label for="stress_level">Stress Level (0 to 10)</label>
+              <input id="stress_level" name="stress_level" type="number" step="0.5" min="0" max="10" value="{{ form.stress_level }}" placeholder="e.g., 3" required />
+            </div>
+          </div>
+          <p class="prefill">Sleep can be prefilled from your last physical-health calculation.</p>
+          <div class="actions">
+            <button class="btn primary" type="submit">Calculate Mental Score</button>
+            <a class="btn ghost" href="/dashboard/">Back to Dashboard</a>
+          </div>
+        </form>
+        <div class="notice">
+          This score is a self-tracking wellness estimate and not a diagnosis. If you are in immediate danger or may harm yourself, seek local emergency or crisis support now.
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>Your Result and Progress</h2>
+        <div class="summary">
+          <div class="pill"><b id="lastScore">-</b><span>Latest Score</span></div>
+          <div class="pill"><b id="bestScore">-</b><span>Best Score</span></div>
+          <div class="pill"><b id="entryCount">0</b><span>Check-ins</span></div>
+        </div>
+
+        {% if result %}
+          <div class="result">
+            <div class="score">Mental Health Score: {{ result.score }}/100</div>
+            <div class="condition">Status: {{ result.condition }}</div>
+            {% if result.concerns %}
+              <h3>Things to Notice</h3>
+              <ul>
+                {% for concern in result.concerns %}
+                  <li class="concern">{{ concern }}</li>
+                {% endfor %}
+              </ul>
+            {% endif %}
+            <h3>Suggestions</h3>
+            <ul>
+              {% for suggestion in result.suggestions %}
+                <li>{{ suggestion }}</li>
+              {% endfor %}
+            </ul>
+          </div>
+        {% endif %}
+
+        <div class="chart-title">Mental Score History</div>
+        <div class="chart-frame">
+          <canvas id="mentalScoreChart"></canvas>
+        </div>
+        <form method="POST" action="/mental/reset/" class="actions">
+          {% csrf_token %}
+          <button class="btn danger" type="submit">Reset Graph</button>
+        </form>
+      </section>
+
+      <section class="card reset">
+        <h2>Quick Mindset Reset</h2>
+        <ul>
+          <li>Breathe slowly for three minutes: inhale for four seconds and exhale for six seconds.</li>
+          <li>Relax your shoulders and jaw, then step away from the screen for a short break.</li>
+          <li>Write down one concern and one small action you can take today.</li>
+        </ul>
+      </section>
+    </main>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <script>
+    (function () {
+      const rawHistory = {{ history_json|default:'[]'|safe }};
+      const history = Array.isArray(rawHistory)
+        ? rawHistory.map(entry => {
+            const score = Number(entry.score);
+            if (!Number.isFinite(score)) return null;
+            return { ts: entry.ts, score: Math.max(0, Math.min(100, score)) };
+          }).filter(Boolean)
+        : [];
+      const data = history.map(entry => entry.score);
+      const labels = history.map((entry, index) => {
+        const date = new Date(entry.ts);
+        return Number.isNaN(date.getTime()) ? `Check-in ${index + 1}` : date.toLocaleDateString();
+      });
+      const latest = data.length ? data[data.length - 1] : null;
+      const best = data.length ? Math.max(...data) : null;
+      const lastEl = document.getElementById('lastScore');
+      const bestEl = document.getElementById('bestScore');
+      const countEl = document.getElementById('entryCount');
+      if (lastEl) lastEl.textContent = latest === null ? '-' : `${latest}/100`;
+      if (bestEl) bestEl.textContent = best === null ? '-' : `${best}/100`;
+      if (countEl) countEl.textContent = String(data.length);
+
+      const canvas = document.getElementById('mentalScoreChart');
+      if (canvas && data.length && typeof Chart !== 'undefined') {
+        new Chart(canvas.getContext('2d'), {
+          type: 'line',
+          data: {
+            labels,
+            datasets: [{
+              label: 'Mental Health Score',
+              data,
+              backgroundColor: 'rgba(22,163,74,.12)',
+              borderColor: '#16a34a',
+              pointBackgroundColor: '#111827',
+              borderWidth: 2,
+              tension: .3,
+              fill: true
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: {
+              y: { min: 0, max: 100, ticks: { stepSize: 10 } },
+              x: { grid: { display: false } }
+            }
+          }
+        });
+      } else if (canvas && data.length) {
+        const ctx = canvas.getContext('2d');
+        const width = canvas.clientWidth || 480;
+        const height = canvas.clientHeight || 225;
+        const padding = 25;
+        const span = Math.max(data.length - 1, 1);
+        canvas.width = width;
+        canvas.height = height;
+        ctx.strokeStyle = '#e2e8f0';
+        ctx.beginPath();
+        ctx.moveTo(padding, padding);
+        ctx.lineTo(padding, height - padding);
+        ctx.lineTo(width - padding, height - padding);
+        ctx.stroke();
+        ctx.strokeStyle = '#16a34a';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        data.forEach((score, index) => {
+          const x = padding + ((width - padding * 2) * index / span);
+          const y = height - padding - ((height - padding * 2) * score / 100);
+          if (index === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+        });
+        ctx.stroke();
+      } else if (canvas) {
+        const ctx = canvas.getContext('2d');
+        ctx.font = '14px "Segoe UI", Arial, sans-serif';
+        ctx.fillStyle = '#64748b';
+        ctx.fillText('Complete your first check-in to start the graph.', 14, 32);
+      }
+    }());
+  </script>
+</body>
+</html>

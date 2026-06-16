@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Stress Management</title>
+  <style>
+    :root{--primary:#111827;--accent:#16a34a;--text:#111827;--muted:#4b5563;--card:rgba(255,255,255,.96);}
+    *{box-sizing:border-box;font-family:'Segoe UI',system-ui,Arial,sans-serif;}
+    body{
+      align-items:center;
+      background:linear-gradient(135deg,#ffffff,#dcfce7);
+      color:var(--text);
+      display:flex;
+      justify-content:center;
+      margin:0;
+      min-height:100vh;
+      padding:24px;
+    }
+    .card{
+      background:var(--card);
+      border-radius:22px;
+      box-shadow:0 18px 60px rgba(17,24,39,.12);
+      border:1px solid rgba(17,24,39,.08);
+      max-width:780px;
+      padding:26px;
+      width:100%;
+    }
+    h1{color:var(--primary);margin:0 0 8px;}
+    h2{color:var(--primary);font-size:18px;margin:20px 0 9px;}
+    p{color:var(--muted);font-weight:700;line-height:1.55;margin:0;}
+    ul{color:#374151;font-weight:700;line-height:1.55;margin:8px 0 0;padding-left:22px;}
+    li{margin-bottom:8px;}
+    .reset{
+      background:#f0fdf4;
+      border:1px solid #bbf7d0;
+      border-radius:15px;
+      color:#111827;
+      font-weight:800;
+      line-height:1.55;
+      margin-top:18px;
+      padding:13px;
+    }
+    .support{
+      border-top:1px solid #e5e7eb;
+      color:var(--muted);
+      font-size:13px;
+      font-weight:700;
+      line-height:1.5;
+      margin-top:18px;
+      padding-top:14px;
+    }
+    .actions{display:flex;gap:12px;margin-top:18px;flex-wrap:wrap;}
+    a{border-radius:14px;font-weight:900;padding:12px 16px;text-decoration:none;}
+    .primary{background:linear-gradient(135deg,#111827,var(--accent));color:#fff;}
+    .secondary{background:rgba(22,163,74,.1);border:1px solid rgba(22,163,74,.2);color:var(--primary);}
+  </style>
+</head>
+<body>
+  <main class="card">
+    <h1>Stress Management</h1>
+    <p>Simple actions can help you slow down and feel more in control.</p>
+
+    <h2>Stress Management Tips</h2>
+    <ul>
+      <li>Take slow breaths: inhale for 4 seconds and exhale for 6 seconds.</li>
+      <li>Take a short break from screens or work when you feel overwhelmed.</li>
+      <li>Go for a short walk or stretch gently to release tension.</li>
+      <li>Write down what is worrying you and choose one small next step.</li>
+      <li>Talk to someone you trust when stress feels difficult to manage alone.</li>
+      <li>Keep a regular sleep routine and drink enough water.</li>
+    </ul>
+
+    <div class="reset">
+      Quick reset: relax your shoulders, unclench your jaw, take five slow breaths, and focus on one task at a time.
+    </div>
+
+    <p class="support">
+      If stress feels overwhelming or you feel unsafe, contact a trusted person or local professional/emergency support promptly.
+    </p>
+
+    <div class="actions">
+      <a class="primary" href="/dashboard/">Back to Dashboard</a>
+      <a class="secondary" href="/mental/">Calculate Mental Score</a>
+    </div>
+  </main>
+</body>
+</html>

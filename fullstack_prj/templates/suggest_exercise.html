@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Personalized Exercise Suggestions</title>
+  <style>
+    :root{
+      --primary:#111827;
+      --accent:#16a34a;
+      --card:rgba(255,255,255,.96);
+      --text:#0f172a;
+      --muted:#475569;
+      --line:#bbf7d0;
+      --shadow:0 18px 60px rgba(17,24,39,.12);
+    }
+    *{box-sizing:border-box;font-family:'Segoe UI',system-ui,Arial,sans-serif;}
+    body{
+      background:linear-gradient(135deg,#ffffff,#dcfce7);
+      color:var(--text);
+      margin:0;
+      min-height:100vh;
+      padding:24px;
+    }
+    .page{margin:0 auto;max-width:1120px;}
+    .hero{
+      background:rgba(255,255,255,.86);
+      border:1px solid rgba(17,24,39,.08);
+      border-radius:24px;
+      box-shadow:var(--shadow);
+      color:var(--text);
+      margin-bottom:16px;
+      padding:22px;
+    }
+    h1{font-size:30px;letter-spacing:-.02em;margin:0 0 8px;}
+    .hero p{font-size:16px;font-weight:700;margin:0;opacity:.92;}
+    .summary{
+      display:grid;
+      gap:12px;
+      grid-template-columns:repeat(4,1fr);
+      margin-bottom:16px;
+    }
+    .pill,.card{
+      background:var(--card);
+      border:1px solid rgba(15,23,42,.06);
+      border-radius:20px;
+      box-shadow:var(--shadow);
+    }
+    .pill{padding:14px;}
+    .pill b{color:var(--primary);display:block;font-size:18px;margin-bottom:4px;}
+    .pill span{color:var(--muted);font-size:13px;font-weight:800;}
+    .grid{display:grid;gap:16px;grid-template-columns:.92fr 1.08fr;}
+    .card{padding:20px;}
+    .card h2{color:var(--primary);font-size:20px;margin:0 0 8px;}
+    .card h3{color:var(--text);font-size:16px;margin:18px 0 8px;}
+    .muted{color:var(--muted);font-weight:700;line-height:1.5;margin:0;}
+    .schedule{
+      background:#f0fdf4;
+      border:1px solid var(--line);
+      border-radius:14px;
+      color:#111827;
+      font-weight:800;
+      line-height:1.45;
+      margin-top:14px;
+      padding:12px;
+    }
+    ul{color:#334155;font-weight:700;line-height:1.55;margin:8px 0 0;padding-left:20px;}
+    li{margin-bottom:7px;}
+    .chart-heading{align-items:baseline;display:flex;gap:10px;justify-content:space-between;margin-bottom:10px;}
+    .chart-heading h2{margin:0;}
+    .chart-heading span{color:var(--muted);font-size:13px;font-weight:800;}
+    .chart-frame{height:300px;position:relative;width:100%;}
+    canvas{
+      background:#f8fafc;
+      border:1px solid #e2e8f0;
+      border-radius:14px;
+      display:block;
+      height:100% !important;
+      width:100% !important;
+    }
+    .chart-note{color:var(--muted);font-size:13px;font-weight:700;line-height:1.45;margin:10px 0 0;}
+    .tip-card{grid-column:1/-1;}
+    .tips{display:grid;gap:10px;grid-template-columns:repeat(2,1fr);list-style:none;margin-top:12px;padding:0;}
+    .tips li{background:#f8fafc;border:1px solid #e2e8f0;border-radius:14px;margin:0;padding:12px;}
+    .actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:18px;}
+    a{
+      border-radius:14px;
+      display:inline-flex;
+      font-weight:900;
+      padding:12px 16px;
+      text-decoration:none;
+    }
+    .primary{background:linear-gradient(135deg,#111827,#16a34a);color:#fff;}
+    .secondary{background:rgba(22,163,74,.12);border:1px solid rgba(22,163,74,.25);color:var(--primary);}
+    @media(max-width:850px){
+      .summary{grid-template-columns:repeat(2,1fr);}
+      .grid{grid-template-columns:1fr;}
+    }
+    @media(max-width:520px){
+      .summary,.tips{grid-template-columns:1fr;}
+      .chart-frame{height:250px;}
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header class="hero">
+      <h1>{{ user.name }}'s Exercise Suggestions</h1>
+      <p>Personalized for your goal: {{ plan.goal }}. Recommendations adapt to your saved physical health scores.</p>
+    </header>
+
+    <section class="summary">
+      <div class="pill"><b>{{ plan.goal }}</b><span>Your Goal</span></div>
+      <div class="pill"><b>{{ plan.score_display }}</b><span>Latest Health Score</span></div>
+      <div class="pill"><b>{{ plan.average_display }}</b><span>Score Average</span></div>
+      <div class="pill"><b>{{ plan.readiness }}</b><span>Recommended Intensity</span></div>
+    </section>
+
+    <main class="grid">
+      <section class="card">
+        <h2>{{ plan.focus_title }}</h2>
+        <p class="muted">{{ plan.focus_text }}</p>
+        <div class="schedule">{{ plan.schedule }}</div>
+
+        <h3>Recommended Exercises</h3>
+        <ul>
+          {% for exercise in plan.exercises %}
+            <li>{{ exercise }}</li>
+          {% endfor %}
+        </ul>
+      </section>
+
+      <section class="card">
+        <div class="chart-heading">
+          <h2>Score Progress for {{ plan.goal }}</h2>
+          <span>{{ plan.progress_display }}</span>
+        </div>
+        <div class="chart-frame">
+          <canvas id="exerciseScoreChart"></canvas>
+        </div>
+        <p class="chart-note">The graph uses your physical health scores to guide exercise intensity. It does not directly measure weight or muscle change.</p>
+      </section>
+
+      <section class="card tip-card">
+        <h2>Exercise Tips for You</h2>
+        <ul class="tips">
+          {% for tip in plan.tips %}
+            <li>{{ tip }}</li>
+          {% endfor %}
+        </ul>
+        <div class="actions">
+          <a class="primary" href="/dashboard/">Back to Dashboard</a>
+          <a class="secondary" href="/physical/">Update Health Score</a>
+          <a class="secondary" href="/suggest-diet/">Next: Suggest Diet</a>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <script>
+    try {
+      const rawHistory = {{ history_json|default:'[]'|safe }};
+      const history = Array.isArray(rawHistory)
+        ? rawHistory.map(entry => {
+            const score = Number(entry.score);
+            if (!Number.isFinite(score)) return null;
+            return { ts: entry.ts, score: Math.max(0, Math.min(100, score)) };
+          }).filter(Boolean)
+        : [];
+      const scores = history.map(entry => entry.score);
+      const labels = history.map((entry, index) => {
+        const date = new Date(entry.ts);
+        return Number.isNaN(date.getTime()) ? `Score ${index + 1}` : date.toLocaleDateString();
+      });
+      const benchmark = {{ plan.benchmark }};
+      const targetScores = scores.map(() => benchmark);
+      const canvas = document.getElementById('exerciseScoreChart');
+
+      if (canvas && scores.length && typeof Chart !== 'undefined') {
+        new Chart(canvas.getContext('2d'), {
+          type: 'line',
+          data: {
+            labels,
+            datasets: [{
+              label: 'Your Health Score',
+              data: scores,
+              borderColor: '#16a34a',
+              backgroundColor: 'rgba(22,163,74,.10)',
+              pointBackgroundColor: '#16a34a',
+              borderWidth: 2,
+              tension: .3,
+              fill: true
+            }, {
+              label: 'Exercise Readiness Benchmark',
+              data: targetScores,
+              borderColor: '#16a34a',
+              borderDash: [6, 5],
+              pointRadius: 0,
+              borderWidth: 2
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: true } },
+            scales: {
+              y: { min: 0, max: 100, ticks: { stepSize: 10 } },
+              x: { grid: { display: false } }
+            }
+          }
+        });
+      } else if (canvas && scores.length) {
+        const ctx = canvas.getContext('2d');
+        const width = canvas.clientWidth || 600;
+        const height = canvas.clientHeight || 300;
+        const padding = 28;
+        const span = Math.max(scores.length - 1, 1);
+        canvas.width = width;
+        canvas.height = height;
+        const drawLine = (values, color, dash) => {
+          ctx.strokeStyle = color;
+          ctx.lineWidth = 2;
+          ctx.setLineDash(dash);
+          ctx.beginPath();
+          values.forEach((score, index) => {
+            const x = padding + ((width - padding * 2) * index / span);
+            const y = height - padding - ((height - padding * 2) * score / 100);
+            if (index === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+          });
+          ctx.stroke();
+        };
+        drawLine(scores, '#16a34a', []);
+        drawLine(targetScores, '#16a34a', [6, 5]);
+        ctx.setLineDash([]);
+      } else if (canvas) {
+        const ctx = canvas.getContext('2d');
+        ctx.font = '14px "Segoe UI", Arial, sans-serif';
+        ctx.fillStyle = '#64748b';
+        ctx.fillText('Calculate a physical health score to start your exercise graph.', 14, 34);
+      }
+    } catch (err) {
+      console.warn('Exercise graph render failed', err);
+    }
+  </script>
+</body>
+</html>

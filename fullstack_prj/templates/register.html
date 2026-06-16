@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Register</title>
+    <style>
+        :root{
+            --bg1:#f7fff9; --bg2:#dcfce7;
+            --card:rgba(255,255,255,.95);
+            --text:#111827; --muted:#4b5563;
+            --primary:#16a34a; --primary2:#15803d;
+            --danger:#111827;
+        }
+        *{box-sizing:border-box;margin:0;padding:0;font-family: 'Segoe UI', system-ui, Arial, sans-serif;}
+        body{
+            min-height:100vh;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            padding:24px;
+            background:
+                linear-gradient(135deg, rgba(255,255,255,.94), rgba(220,252,231,.88)),
+                url("https://images.unsplash.com/photo-1517836357463-d25dfeac3438?auto=format&fit=crop&w=1600&q=60");
+            background-size:cover;
+            background-position:center;
+            background-repeat:no-repeat;
+            background-attachment:fixed;
+            color:var(--text);
+        }
+        body:before{
+            content:"";
+            position:fixed;
+            inset:0;
+            background:rgba(255,255,255,.35);
+            z-index:-1;
+        }
+        .wrap{width:100%;max-width:520px;}
+        .card{
+            background:var(--card);
+            border-radius:18px;
+            padding:28px 26px;
+            box-shadow: 0 18px 50px rgba(2,6,23,.18);
+            border:1px solid rgba(15,23,42,.08);
+            backdrop-filter: blur(8px);
+        }
+        .title{font-size:30px;font-weight:900;color:var(--text);text-align:center;}
+        .subtitle{color:var(--muted);text-align:center;margin-top:6px;margin-bottom:18px;font-weight:600;}
+        form{margin-top:10px;display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+        .full{grid-column:1/-1;}
+        label{display:block;font-size:13px;color:var(--muted);margin:2px 0 6px;font-weight:700;}
+        input, select{
+            width:100%;
+            padding:12px 12px;
+            border-radius:12px;
+            border:1px solid rgba(15,23,42,.14);
+            outline:none;
+            background:white;
+        }
+        input:focus, select:focus{border-color:rgba(22,163,74,.7); box-shadow: 0 0 0 4px rgba(22,163,74,.18);}
+        button{
+            grid-column:1/-1;
+            width:100%;
+            padding:13px;
+            border:none;
+            border-radius:12px;
+            background:linear-gradient(135deg,var(--primary),var(--primary2));
+            color:white;
+            font-weight:900;
+            font-size:16px;
+            cursor:pointer;
+            box-shadow: 0 10px 25px rgba(22,163,74,.25);
+            margin-top:6px;
+        }
+        button:hover{transform: translateY(-1px); filter: brightness(1.02);}
+        .linkRow{text-align:center;margin-top:16px;}
+        .linkRow a{color:var(--primary);text-decoration:none;font-weight:900;}
+        .linkRow a:hover{text-decoration:underline;}
+        .badge{
+            display:inline-flex; align-items:center; gap:8px;
+            padding:8px 12px; border-radius:999px;
+            background: rgba(22,163,74,.12);
+            color: var(--primary2);
+            font-weight:900; font-size:13px;
+        }
+        .top{display:flex;justify-content:center;margin-bottom:10px;}
+        @media (max-width:520px){form{grid-template-columns:1fr;} }
+    </style>
+</head>
+<body>
+    <div class="wrap">
+        <div class="card">
+            <div class="top"><span class="badge">✨ Create Your Profile</span></div>
+            <div class="title">Register</div>
+            <div class="subtitle">Join the AI Health dashboard in seconds.</div>
+
+            <form method="POST" action="{% url 'register' %}">
+                {% csrf_token %}
+
+                {% if messages %}
+                    {% for message in messages %}
+                        <div style="grid-column:1/-1;color:#15803d;font-weight:900;margin:8px 0 0;text-align:center;">
+                            {{ message }}
+                        </div>
+
+                    {% endfor %}
+                {% endif %}
+
+
+                <div>
+                    <label for="name">Name</label>
+                    <input id="name" type="text" name="name" placeholder="Name" required />
+                </div>
+
+
+
+
+                <div>
+                    <label for="dob">Date of Birth</label>
+                    <input id="dob" type="date" name="dob" required />
+                </div>
+
+
+                <div>
+                    <label for="height">Height (cm)</label>
+                    <input id="height" type="number" name="height" placeholder="Height" required />
+                </div>
+
+                <div>
+                    <label for="weight">Weight (kg)</label>
+                    <input id="weight" type="number" name="weight" placeholder="Weight" required />
+                </div>
+
+                <div>
+                    <label for="gender">Gender</label>
+                    <select id="gender" name="gender" required>
+                        <option value="">Select</option>
+                        <option>Male</option>
+                        <option>Female</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="goal">Goal</label>
+                    <select id="goal" name="goal" required>
+                        <option value="">Select</option>
+                        <option>Weight Loss</option>
+                        <option>Weight Gain</option>
+                        <option>Stay Fit</option>
+                    </select>
+                </div>
+
+                <div class="full">
+                    <label for="email">Email</label>
+                    <input id="email" type="email" name="email" placeholder="Email" required />
+                </div>
+
+                <div class="full">
+                    <label for="password">Password</label>
+                    <div style="position:relative;">
+                        <input id="password" type="password" name="password" placeholder="Password" required style="padding-right:54px;" />
+                        <button type="button" id="togglePassword" style="position:absolute; right:6px; top:50%; transform:translateY(-50%); width:auto; margin-top:0; padding:8px 10px; border-radius:10px; border:1px solid rgba(15,23,42,.14); background:rgba(255,255,255,.85); color:var(--text); font-weight:900; cursor:pointer;">
+                            Show
+                        </button>
+                    </div>
+                </div>
+
+                <button type="submit">Register</button>
+
+                <script>
+                    (function(){
+                        const input = document.getElementById('password');
+                        const btn = document.getElementById('togglePassword');
+                        if(!input || !btn) return;
+
+                        btn.addEventListener('click', function(){
+                            const isPassword = input.type === 'password';
+                            input.type = isPassword ? 'text' : 'password';
+                            btn.textContent = isPassword ? 'Hide' : 'Show';
+                        });
+                    })();
+                </script>
+
+            </form>
+
+            <div class="linkRow">
+                <a href="/login/">Already have an account? Login</a>
+            </div>
+
+            <div class="linkRow" style="margin-top:10px; font-weight:800; color:#15803d;">
+                Registration successful. Please login.
+            </div>
+
+        </div>
+    </div>
+</body>
+</html>
+

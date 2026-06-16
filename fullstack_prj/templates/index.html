@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI Health Monitoring System</title>
+    <style>
+        :root{--bg1:#f7fff9;--bg2:#dcfce7;--text:#111827;--muted:#4b5563;--card:rgba(255,255,255,.96);--primary:#111827;--primary2:#0f172a;--green:#16a34a;--green2:#15803d;}
+        *{box-sizing:border-box;margin:0;padding:0;font-family:'Segoe UI',system-ui,Arial,sans-serif;}
+        body{
+            min-height:100vh;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            padding:24px;
+            background:
+                linear-gradient(135deg, rgba(255,255,255,.94), rgba(220,252,231,.88)),
+                url("https://images.unsplash.com/photo-1551183053-bf91a1d81141?auto=format&fit=crop&w=1600&q=60");
+            background-size:cover;
+            background-position:center;
+            background-repeat:no-repeat;
+            background-attachment:fixed;
+        }
+        body:before{
+            content:"";
+            position:fixed;
+            inset:0;
+            background:rgba(255,255,255,.35);
+            z-index:-1;
+        }
+        .card{width:100%;max-width:520px;background:var(--card);border-radius:22px;padding:44px 30px;box-shadow:0 18px 60px rgba(2,6,23,.18);border:1px solid rgba(15,23,42,.08);backdrop-filter: blur(10px);text-align:center;}
+        .brand{display:flex;justify-content:center;gap:12px;align-items:center;margin-bottom:18px;}
+        .logo{width:52px;height:52px;border-radius:16px;background:linear-gradient(135deg,var(--green),var(--green2));display:flex;align-items:center;justify-content:center;color:#fff;font-size:22px;font-weight:900;box-shadow:0 14px 40px rgba(22,163,74,.22);} 
+        h1{color:var(--text);font-size:34px;font-weight:950;letter-spacing:-0.02em;}
+        p{color:var(--muted);margin-top:10px;font-size:16px;line-height:1.6;font-weight:600;}
+        .btns{margin-top:26px;display:flex;gap:14px;justify-content:center;flex-wrap:wrap;}
+        .btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;padding:12px 20px;border-radius:14px;text-decoration:none;color:#fff;font-weight:900;font-size:16px;box-shadow:0 12px 30px rgba(0,0,0,.08);transition:transform .15s, filter .15s;}
+        .btn:hover{transform:translateY(-2px);filter:brightness(1.03);} 
+        .btn.login{background:linear-gradient(135deg,var(--primary),var(--primary2));}
+        .btn.register{background:linear-gradient(135deg,var(--green),var(--green2));}
+        .hint{margin-top:18px;color:#64748b;font-weight:700;font-size:13px;}
+    </style>
+</head>
+<body>
+    <div class="card">
+        <div class="brand">
+            <div class="logo">HI</div>
+        </div>
+        <h1>Welcome to Health Monitoring System</h1>
+        <p>Your smart AI assistant for tracking health, fitness, sleep and wellness.</p>
+
+        <div class="btns">
+            <a href="/login" class="btn login">🩺 Login</a>
+            <a href="/register" class="btn register">✨ Register</a>
+        </div>
+        <div class="hint">Instant dashboard, powerful insights.</div>
+    </div>
+</body>
+</html>
+

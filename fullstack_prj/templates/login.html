@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login - Health Monitoring</title>
+    <style>
+        :root{
+            --bg1:#f7fff9; --bg2:#dcfce7;
+            --card:rgba(255,255,255,.95);
+            --text:#111827; --muted:#4b5563;
+            --primary:#111827; --primary2:#16a34a;
+            --danger:#111827;
+        }
+        *{box-sizing:border-box;margin:0;padding:0;font-family: 'Segoe UI', system-ui, Arial, sans-serif;}
+        body{
+            min-height:100vh;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            padding:24px;
+            background:
+                linear-gradient(135deg, rgba(255,255,255,.94), rgba(220,252,231,.88)),
+                url("https://images.unsplash.com/photo-1517963879433-6d2c84c7f25d?auto=format&fit=crop&w=1600&q=60");
+            background-size:cover;
+            background-position:center;
+            background-repeat:no-repeat;
+            background-attachment:fixed;
+            color:var(--text);
+        }
+        body:before{
+            content:"";
+            position:fixed;
+            inset:0;
+            background:rgba(255,255,255,.35);
+            z-index:-1;
+        }
+        .wrap{width:100%;max-width:420px;}
+        .card{
+            background:var(--card);
+            border-radius:18px;
+            padding:28px 24px;
+            box-shadow: 0 18px 50px rgba(2,6,23,.18);
+            border:1px solid rgba(15,23,42,.08);
+            backdrop-filter: blur(8px);
+        }
+        .title{font-size:28px;font-weight:800;color:var(--text);text-align:center;}
+        .subtitle{color:var(--muted);text-align:center;margin-top:6px;margin-bottom:18px;}
+        form{margin-top:14px;}
+        label{display:block;font-size:13px;color:var(--muted);margin:10px 0 6px;}
+        input{
+            width:100%;
+            padding:12px 12px;
+            border-radius:12px;
+            border:1px solid rgba(15,23,42,.14);
+            outline:none;
+            background:white;
+        }
+        input:focus{border-color:rgba(22,163,74,.7); box-shadow: 0 0 0 4px rgba(22,163,74,.16);}
+        button{
+            width:100%;
+            margin-top:16px;
+            padding:12px;
+            border:none;
+            border-radius:12px;
+            background:linear-gradient(135deg,#111827,#16a34a);
+            color:white;
+            font-weight:800;
+            font-size:16px;
+            cursor:pointer;
+            box-shadow: 0 10px 25px rgba(22,163,74,.22);
+        }
+        button:hover{transform: translateY(-1px); filter: brightness(1.02);}
+        .msg{margin-top:12px;color:var(--danger);font-weight:700;text-align:center;}
+        .linkRow{margin-top:16px;text-align:center;}
+        .linkRow a{color:var(--primary);text-decoration:none;font-weight:800;}
+        .linkRow a:hover{text-decoration:underline;}
+        .badge{
+            display:inline-flex; align-items:center; gap:8px;
+            padding:8px 12px; border-radius:999px;
+            background: rgba(22,163,74,.12);
+            color: var(--primary2);
+            font-weight:800; font-size:13px;
+        }
+        .top{display:flex;justify-content:center;margin-bottom:12px;}
+    </style>
+</head>
+<body>
+    <div class="wrap">
+        <div class="card">
+            <div class="top"><span class="badge">🩺 Smart Health AI</span></div>
+            <div class="title">Login</div>
+            <div class="subtitle">Welcome back. Track your mental & physical wellness.</div>
+
+            <form method="POST" autocomplete="off">
+                {% csrf_token %}
+
+                <label for="email">Email</label>
+                <input id="email" type="email" name="email" value="" placeholder="Enter Email" autocomplete="off" required />
+
+                <label for="password">Password</label>
+                <div style="position:relative;">
+                    <input id="password" type="password" name="password" value="" placeholder="Enter Password" autocomplete="new-password" required style="padding-right:54px;" />
+                    <button type="button" id="togglePassword" style="position:absolute; right:6px; top:50%; transform:translateY(-50%); width:auto; margin-top:0; padding:8px 10px; border-radius:10px; border:1px solid rgba(15,23,42,.14); background:rgba(255,255,255,.85); color:var(--text); font-weight:800; cursor:pointer;">
+                        Show
+                    </button>
+                </div>
+
+                <button type="submit">Login</button>
+
+                <script>
+                    (function(){
+                        const input = document.getElementById('password');
+                        const btn = document.getElementById('togglePassword');
+                        if(!input || !btn) return;
+
+                        btn.addEventListener('click', function(){
+                            const isPassword = input.type === 'password';
+                            input.type = isPassword ? 'text' : 'password';
+                            btn.textContent = isPassword ? 'Hide' : 'Show';
+                        });
+                    })();
+                </script>
+
+
+                {% if message %}
+                    <div class="msg">{{ message }}</div>
+                {% endif %}
+            </form>
+
+            <div class="linkRow">
+                <a href="/register">Not registered? Create account</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+

@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Physical Health</title>
+  <style>
+    :root{
+      --bg1:#ffffff;
+      --bg2:#dcfce7;
+      --card:rgba(255,255,255,.95);
+      --text:#111827;
+      --muted:#4b5563;
+      --primary:#111827;
+      --primary2:#16a34a;
+      --ok:#16a34a;
+    }
+    *{box-sizing:border-box;margin:0;padding:0;font-family:'Segoe UI',system-ui,Arial,sans-serif;}
+    body{
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:24px;
+      background:
+        linear-gradient(135deg, rgba(255,255,255,.94), rgba(220,252,231,.86)),
+        url("https://images.unsplash.com/photo-1506126613408-eca07ce68773?auto=format&fit=crop&w=1600&q=60");
+      background-size:cover;
+      background-position:center;
+      background-repeat:no-repeat;
+      background-attachment:fixed;
+      color:var(--text);
+    }
+    body:before{
+      content:"";
+      position:fixed;
+      inset:0;
+      background:rgba(255,255,255,.35);
+      z-index:-1;
+    }
+    .wrap{width:100%;max-width:980px;}
+    .header{
+      background: rgba(255,255,255,.86);
+      border:1px solid rgba(17,24,39,.08);
+      border-radius:22px;
+      padding:18px;
+      color:var(--text);
+      box-shadow:0 18px 60px rgba(0,0,0,.18);
+      backdrop-filter: blur(10px);
+      margin-bottom:16px;
+    }
+    .header h1{font-size:30px;letter-spacing:-0.02em;}
+    .header p{color:var(--muted);font-weight:700;margin-top:6px;}
+
+    .grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+    @media (max-width:900px){.grid{grid-template-columns:1fr;}}
+
+    .card{
+      background:var(--card);
+      border-radius:20px;
+      padding:20px;
+      box-shadow:0 18px 60px rgba(2,6,23,.18);
+      border:1px solid rgba(17,24,39,.08);
+    }
+    .card h3{color:var(--primary);font-size:18px;margin-bottom:10px;}
+    .row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+    @media (max-width:520px){.row{grid-template-columns:1fr;}}
+
+    .field label{display:block;font-weight:900;color:var(--primary);font-size:13px;margin-bottom:6px;}
+    input{
+      width:100%;
+      padding:12px;
+      border-radius:12px;
+      border:1px solid rgba(15,23,42,.14);
+      outline:none;
+      background:white;
+      font-weight:800;
+    }
+    input:focus{border-color:var(--primary2); box-shadow:0 0 0 3px rgba(22,163,74,.14);} 
+
+    .actions{display:flex;gap:12px;justify-content:flex-start;flex-wrap:wrap;margin-top:14px;}
+    .btn{
+      display:inline-flex;align-items:center;justify-content:center;gap:10px;
+      text-decoration:none;
+      padding:12px 18px;
+      border-radius:14px;
+      background:linear-gradient(135deg,#111827,var(--primary2));
+      color:#fff;
+      font-weight:950;
+      box-shadow:0 16px 40px rgba(15,118,110,.25);
+      transition:.2s;
+      border:none;
+      cursor:pointer;
+    }
+    .btn:hover{transform: translateY(-2px); filter:brightness(1.02);} 
+
+    .secondary-btn{
+      background:rgba(255,255,255,.75);
+      border:1px solid rgba(255,255,255,.35);
+      color:var(--primary2);
+      box-shadow:none;
+    }
+    .danger-btn{
+      background:#f0fdf4;
+      border:1px solid #bbf7d0;
+      color:#111827;
+      box-shadow:none;
+    }
+
+    .muted{color:var(--muted);font-weight:800;}
+    .error{
+      background:#f0fdf4;
+      border:1px solid #bbf7d0;
+      border-radius:12px;
+      color:#111827;
+      font-weight:800;
+      margin-bottom:12px;
+      padding:10px 12px;
+    }
+
+    .result-box{
+      background:#f0fdf4;
+      border:1px solid #bbf7d0;
+      border-radius:16px;
+      padding:14px;
+    }
+
+    .score{
+      font-size:22px;font-weight:1000;color:var(--primary2);
+    }
+    .cond{margin-top:6px;font-size:16px;font-weight:950;color:#111827;}
+
+    .chart-wrap{margin-top:14px;}
+    .chart-title{font-weight:1000;color:#111827;margin-bottom:8px;}
+    .chart-frame{height:190px;position:relative;width:100%;}
+    .chart-frame canvas{
+      background:rgba(255,255,255,.6);
+      border-radius:14px;
+      border:1px solid rgba(2,6,23,.06);
+      display:block;
+      height:100% !important;
+      width:100% !important;
+    }
+
+    ul{margin-left:18px;color:var(--muted);font-weight:750;line-height:1.7;}
+    .section-gap{margin-top:12px;}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="header">
+      <h1>Physical Health</h1>
+      <p>Update your daily inputs and track progress over time.</p>
+    </div>
+
+    <div class="grid">
+      <div class="card">
+        <h3>Enter Your Daily Inputs</h3>
+        {% if form_error %}
+          <div class="error">{{ form_error }}</div>
+        {% endif %}
+        <form method="POST">
+          {% csrf_token %}
+          <div class="row">
+            <div class="field">
+              <label>Water Intake (Liters)</label>
+              <input type="number" step="0.1" min="0" name="water_liters" value="{{ form.water_liters|default:'' }}" placeholder="e.g., 2.5" required />
+            </div>
+
+            <div class="field">
+              <label>Sleep Duration (Hours)</label>
+              <input type="number" step="0.1" min="0" name="sleep_hours" value="{{ form.sleep_hours|default:'' }}" placeholder="e.g., 7.5" required />
+            </div>
+
+            <div class="field">
+              <label>Exercise Time (Minutes / Day)</label>
+              <input type="number" step="1" min="0" name="exercise_minutes" value="{{ form.exercise_minutes|default:'' }}" placeholder="e.g., 30" required />
+            </div>
+
+            <div class="field">
+              <label>Steps Count (Daily)</label>
+              <input type="number" step="1" min="0" name="steps_count" value="{{ form.steps_count|default:'' }}" placeholder="e.g., 6500" required />
+            </div>
+
+            <div class="field">
+              <label>Age (from registration)</label>
+              <input type="number" step="1" min="0" name="age" value="{{ user.age|default:'' }}" readonly style="background:#f3f4f6;" />
+            </div>
+
+            <div class="field">
+              <label>Weight (from registration)</label>
+              <input type="number" step="0.1" min="0" name="weight" value="{{ user.weight|default:'' }}" readonly style="background:#f3f4f6;" />
+            </div>
+
+            <div class="field" style="grid-column:1/-1;">
+              <label>Height (from registration)</label>
+              <input type="number" step="0.1" min="0" name="height" value="{{ user.height|default:'' }}" readonly style="background:#f3f4f6;" />
+            </div>
+          </div>
+
+          <div class="actions">
+            <button class="btn" type="submit">Calculate & Show Progress</button>
+          </div>
+
+          <div class="section-gap muted">Complete all daily inputs so progress compares like-for-like scores.</div>
+        </form>
+      </div>
+
+      <div class="card">
+        <h3>Health Score + Progress</h3>
+
+        {% if result %}
+          <div class="result-box">
+            <div class="score">Physical Health Score: {{ result.score }}/100</div>
+            <div class="cond">Health Condition: {{ result.condition }}</div>
+
+            <div class="section-gap">
+              <div class="chart-wrap">
+                <div class="chart-title">Progress (last entries)</div>
+                <div class="chart-frame">
+                  <canvas id="healthChart"></canvas>
+                </div>
+              </div>
+            </div>
+          </div>
+        {% else %}
+          <div class="result-box">
+            <ul>
+              <li>Submit your inputs to calculate your physical health score.</li>
+              <li>The chart will show your full score history.</li>
+            </ul>
+            <div class="chart-wrap">
+              <div class="chart-title">Progress (last entries)</div>
+              <div class="chart-frame">
+                <canvas id="healthChart"></canvas>
+              </div>
+            </div>
+          </div>
+        {% endif %}
+
+        <div class="actions" style="margin-top:14px;">
+          <a class="btn secondary-btn" href="/dashboard/">⬅ Back to Dashboard</a>
+          <a class="btn" href="/physical-tracker/" style="background:#16a34a;">Open Tracker →</a>
+          <form method="POST" action="/physical/reset/" style="margin:0;">
+            {% csrf_token %}
+            <button class="btn danger-btn" type="submit">Reset Graph</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <script>
+    try {
+      const rawHistory = {{ history_json|default:'[]'|safe }};
+      const history = Array.isArray(rawHistory)
+        ? rawHistory.map(h => {
+            const score = Number(h.score);
+            if (!Number.isFinite(score)) return null;
+            return { ts: h.ts, score: Math.max(0, Math.min(100, score)) };
+          }).filter(Boolean)
+        : [];
+      const labels = history.map(h => {
+        try { return new Date(h.ts).toLocaleDateString(); } catch(e){ return h.ts || ''; }
+      });
+      const data = history.map(h => h.score);
+      const ctxEl = document.getElementById('healthChart');
+
+      if (ctxEl && history.length && typeof Chart !== 'undefined') {
+        const ctx = ctxEl.getContext('2d');
+        new Chart(ctx, {
+          type: 'line',
+          data: {
+            labels: labels,
+            datasets: [{
+              label: 'Health Score',
+              data: data,
+              backgroundColor: 'rgba(22,163,74,0.14)',
+              borderColor: '#16a34a',
+              pointBackgroundColor: '#16a34a',
+              tension: 0.35,
+              fill: true,
+              borderWidth: 2,
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: {
+              y: { min: 0, max: 100, ticks: { stepSize: 10 } },
+              x: { grid: { display: false } }
+            }
+          }
+        });
+      } else if (ctxEl && history.length) {
+        const ctx = ctxEl.getContext('2d');
+        const width = ctxEl.clientWidth || 420;
+        const height = ctxEl.clientHeight || 190;
+        const padding = 24;
+        const span = Math.max(data.length - 1, 1);
+        ctxEl.width = width;
+        ctxEl.height = height;
+        ctx.strokeStyle = '#e5e7eb';
+        ctx.beginPath();
+        ctx.moveTo(padding, padding);
+        ctx.lineTo(padding, height - padding);
+        ctx.lineTo(width - padding, height - padding);
+        ctx.stroke();
+        ctx.strokeStyle = '#16a34a';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        data.forEach((score, index) => {
+          const x = padding + ((width - padding * 2) * index / span);
+          const y = height - padding - ((height - padding * 2) * score / 100);
+          if (index === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+        });
+        ctx.stroke();
+      } else if (ctxEl) {
+        const ctx = ctxEl.getContext('2d');
+        ctx.clearRect(0, 0, ctxEl.width, ctxEl.height);
+        ctx.font = '14px "Segoe UI", Arial, sans-serif';
+        ctx.fillStyle = '#6b7280';
+        ctx.fillText('No history yet - submit the form to generate your first score.', 10, 30);
+      }
+    } catch (err) {
+      console.warn('Chart render failed', err);
+    }
+  </script>
+</body>
+</html>
+
