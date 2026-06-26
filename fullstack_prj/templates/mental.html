@@ -82,7 +82,7 @@
     .btn.primary{background:linear-gradient(135deg,#111827,#16a34a);color:#fff;}
     .btn.ghost{background:rgba(22,163,74,.09);border:1px solid rgba(22,163,74,.18);color:var(--primary);}
     .btn.danger{background:#f0fdf4;border:1px solid #bbf7d0;color:#111827;}
-    .summary{display:grid;gap:10px;grid-template-columns:repeat(3,1fr);margin-bottom:14px;}
+    .summary{display:grid;gap:10px;grid-template-columns:repeat(4,1fr);margin-bottom:14px;}
     .pill{background:var(--soft);border:1px solid #bbf7d0;border-radius:14px;padding:11px;}
     .pill b{color:var(--primary);display:block;font-size:18px;margin-bottom:3px;}
     .pill span{color:var(--muted);font-size:12px;font-weight:800;}
@@ -172,9 +172,10 @@
 
       <section class="card">
         <h2>Your Result and Progress</h2>
-        <div class="summary">
+        <div class="summary" aria-live="polite">
           <div class="pill"><b id="lastScore">-</b><span>Latest Score</span></div>
           <div class="pill"><b id="bestScore">-</b><span>Best Score</span></div>
+          <div class="pill"><b id="averageScore">-</b><span>Average Score</span></div>
           <div class="pill"><b id="entryCount">0</b><span>Check-ins</span></div>
         </div>
 
@@ -201,7 +202,7 @@
 
         <div class="chart-title">Mental Score History</div>
         <div class="chart-frame">
-          <canvas id="mentalScoreChart"></canvas>
+          <canvas id="mentalScoreChart" aria-label="Mental score history chart" role="img"></canvas>
         </div>
         <form method="POST" action="/mental/reset/" class="actions">
           {% csrf_token %}
@@ -238,11 +239,16 @@
       });
       const latest = data.length ? data[data.length - 1] : null;
       const best = data.length ? Math.max(...data) : null;
+      const average = data.length
+        ? Math.round(data.reduce((total, score) => total + score, 0) / data.length)
+        : null;
       const lastEl = document.getElementById('lastScore');
       const bestEl = document.getElementById('bestScore');
+      const averageEl = document.getElementById('averageScore');
       const countEl = document.getElementById('entryCount');
       if (lastEl) lastEl.textContent = latest === null ? '-' : `${latest}/100`;
       if (bestEl) bestEl.textContent = best === null ? '-' : `${best}/100`;
+      if (averageEl) averageEl.textContent = average === null ? '-' : `${average}/100`;
       if (countEl) countEl.textContent = String(data.length);
 
       const canvas = document.getElementById('mentalScoreChart');
@@ -297,6 +303,8 @@
         ctx.stroke();
       } else if (canvas) {
         const ctx = canvas.getContext('2d');
+        canvas.width = canvas.clientWidth || 480;
+        canvas.height = canvas.clientHeight || 225;
         ctx.font = '14px "Segoe UI", Arial, sans-serif';
         ctx.fillStyle = '#64748b';
         ctx.fillText('Complete your first check-in to start the graph.', 14, 32);

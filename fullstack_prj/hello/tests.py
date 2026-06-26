@@ -261,6 +261,8 @@ class MentalHealthCalculationTests(TestCase):
         self.assertContains(response, 'Mental Health Score: 98/100')
         self.assertContains(response, 'Doing Well')
         self.assertContains(response, 'Mental Score History')
+        self.assertContains(response, 'Average Score')
+        self.assertContains(response, 'aria-label="Mental score history chart"')
 
     def test_incomplete_or_invalid_mental_input_is_not_saved(self):
         self._log_in()
