@@ -239,9 +239,9 @@
         {% endif %}
 
         <div class="actions" style="margin-top:14px;">
-          <a class="btn secondary-btn" href="/dashboard/">⬅ Back to Dashboard</a>
-          <a class="btn" href="/physical-tracker/" style="background:#16a34a;">Open Tracker →</a>
-          <form method="POST" action="/physical/reset/" style="margin:0;">
+          <a class="btn secondary-btn" href="{% url 'dashboard' %}">⬅ Back to Dashboard</a>
+          <a class="btn" href="{% url 'physical_health_tracker' %}" style="background:#16a34a;">Open Tracker →</a>
+          <form method="POST" action="{% url 'reset_physical_history' %}" style="margin:0;">
             {% csrf_token %}
             <button class="btn danger-btn" type="submit">Reset Graph</button>
           </form>
