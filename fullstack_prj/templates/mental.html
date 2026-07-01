@@ -162,7 +162,7 @@
           <p class="prefill">Sleep can be prefilled from your last physical-health calculation.</p>
           <div class="actions">
             <button class="btn primary" type="submit">Calculate Mental Score</button>
-            <a class="btn ghost" href="/dashboard/">Back to Dashboard</a>
+            <a class="btn ghost" href="{% url 'dashboard' %}">Back to Dashboard</a>
           </div>
         </form>
         <div class="notice">
@@ -204,7 +204,7 @@
         <div class="chart-frame">
           <canvas id="mentalScoreChart" aria-label="Mental score history chart" role="img"></canvas>
         </div>
-        <form method="POST" action="/mental/reset/" class="actions">
+        <form method="POST" action="{% url 'reset_mental_history' %}" class="actions">
           {% csrf_token %}
           <button class="btn danger" type="submit">Reset Graph</button>
         </form>
