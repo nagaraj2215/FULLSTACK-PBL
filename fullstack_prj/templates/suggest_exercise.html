@@ -136,7 +136,7 @@
           <span>{{ plan.progress_display }}</span>
         </div>
         <div class="chart-frame">
-          <canvas id="exerciseScoreChart"></canvas>
+          <canvas id="exerciseScoreChart" aria-label="Exercise readiness score chart" role="img"></canvas>
         </div>
         <p class="chart-note">The graph uses your physical health scores to guide exercise intensity. It does not directly measure weight or muscle change.</p>
       </section>
@@ -149,9 +149,9 @@
           {% endfor %}
         </ul>
         <div class="actions">
-          <a class="primary" href="/dashboard/">Back to Dashboard</a>
-          <a class="secondary" href="/physical/">Update Health Score</a>
-          <a class="secondary" href="/suggest-diet/">Next: Suggest Diet</a>
+          <a class="primary" href="{% url 'dashboard' %}">Back to Dashboard</a>
+          <a class="secondary" href="{% url 'physical_health' %}">Update Health Score</a>
+          <a class="secondary" href="{% url 'suggest_diet' %}">Next: Suggest Diet</a>
         </div>
       </section>
     </main>

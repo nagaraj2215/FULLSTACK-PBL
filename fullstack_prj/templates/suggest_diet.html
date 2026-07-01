@@ -153,9 +153,9 @@
             {% endfor %}
           </ul>
           <div class="actions">
-            <a class="primary" href="/dashboard/">Back to Dashboard</a>
-            <a class="secondary" href="/physical/">Update Health Score</a>
-            <a class="secondary" href="/sleep-improvement/">Next: Sleep Improvement</a>
+            <a class="primary" href="{% url 'dashboard' %}">Back to Dashboard</a>
+            <a class="secondary" href="{% url 'physical_health' %}">Update Health Score</a>
+            <a class="secondary" href="{% url 'sleep_improvement' %}">Next: Sleep Improvement</a>
           </div>
         </section>
       </div>
