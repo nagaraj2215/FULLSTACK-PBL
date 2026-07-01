@@ -201,7 +201,7 @@
 
                 </div>
             </div>
-            <form class="logout-form" method="POST" action="/logout/">
+            <form class="logout-form" method="POST" action="{% url 'logout' %}">
                 {% csrf_token %}
                 <button class="logout-btn" type="submit">Logout</button>
             </form>
@@ -224,22 +224,22 @@
             <div class="nav-card physical">
                 <div class="nav-title">Physical Health</div>
                 <div class="nav-desc">AI-powered exercise guidance + recovery tips.</div>
-                <a class="health-btn" href="/physical/">Open Physical →</a>
+                <a class="health-btn" href="{% url 'physical_health' %}">Open Physical →</a>
             </div>
             <div class="nav-card mental">
                 <div class="nav-title">Mental Health</div>
                 <div class="nav-desc">Breathing, stress control, and calm routines.</div>
-                <a class="health-btn" href="/mental/">Open Mental →</a>
+                <a class="health-btn" href="{% url 'mental_health' %}">Open Mental →</a>
             </div>
         </div>
 
         <div class="section">
             <h2>AI Personalized Suggestions</h2>
             <div class="circle-container">
-                <div class="circle c1"><a href="/suggest-exercise/">Suggest Exercise</a></div>
-                <div class="circle c2"><a href="/suggest-diet/">Suggest Diet</a></div>
-                <div class="circle c3"><a href="/sleep-improvement/">Sleep Improvement</a></div>
-                <div class="circle c4"><a href="/stress-management/">Stress Management</a></div>
+                <div class="circle c1"><a href="{% url 'suggest_exercise' %}">Suggest Exercise</a></div>
+                <div class="circle c2"><a href="{% url 'suggest_diet' %}">Suggest Diet</a></div>
+                <div class="circle c3"><a href="{% url 'sleep_improvement' %}">Sleep Improvement</a></div>
+                <div class="circle c4"><a href="{% url 'stress_management' %}">Stress Management</a></div>
             </div>
         </div>
     </div>
