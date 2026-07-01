@@ -152,14 +152,14 @@
         <div class="chart-wrap">
           <div class="chart-title">Health Score (all entries)</div>
           <div class="chart-frame">
-            <canvas id="healthProgressChart"></canvas>
+            <canvas id="healthProgressChart" aria-label="Physical score history chart" role="img"></canvas>
           </div>
           <div class="trend-note">Solid line: submitted scores. Dashed line: average of all scores up to each submission.</div>
         </div>
 
         <div class="actions">
-          <a class="btn ghost" href="/dashboard/">← Back</a>
-          <a class="btn primary" href="/physical/">Calculate Physical Health →</a>
+          <a class="btn ghost" href="{% url 'dashboard' %}">← Back</a>
+          <a class="btn primary" href="{% url 'physical_health' %}">Calculate Physical Health →</a>
         </div>
 
         <div class="note">
