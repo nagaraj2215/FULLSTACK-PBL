@@ -2,6 +2,7 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
+    # Account and main pages
     path('', views.home, name='home'),
     path('register/', views.register, name='register'),
     path('register-success/', views.register_success, name='register_success'),
@@ -9,13 +10,16 @@ urlpatterns = [
     path('logout/', views.logout_view, name='logout'),
     path('dashboard/', views.dashboard, name='dashboard'),
 
+    # Physical health tools
     path('physical/', views.physical_health, name='physical_health'),
     path('physical-tracker/', views.physical_health_tracker, name='physical_health_tracker'),
     path('physical/reset/', views.reset_physical_history, name='reset_physical_history'),
 
+    # Mental health tools
     path('mental/', views.mental_health, name='mental_health'),
     path('mental/reset/', views.reset_mental_history, name='reset_mental_history'),
 
+    # Suggestion pages
     path('suggest-exercise/', views.suggest_exercise, name='suggest_exercise'),
     path('suggest-diet/', views.suggest_diet, name='suggest_diet'),
     path('sleep-improvement/', views.sleep_improvement, name='sleep_improvement'),
